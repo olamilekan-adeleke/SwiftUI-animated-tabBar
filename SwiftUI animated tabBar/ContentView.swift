@@ -23,9 +23,24 @@ struct ContentView: View {
                     .foregroundColor(.gray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 15)
 
             tagsView()
+
+            Spacer().frame(height: 20)
+
+            RoundedRectangle(cornerRadius: 5)
+                .frame(height: 2)
+                .padding(.horizontal, 10)
+
+            Spacer().frame(height: 20)
+
+            TabBarView()
+            
+            Spacer().frame(height: 20)
+            
+            TabBar2View()
+            
 
             Spacer()
         }
@@ -57,11 +72,81 @@ struct ContentView: View {
                 }
             }
         }
+        .padding(.leading, 15)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct TabBarView: View {
+    let tabs: [String] = ["Home", "Chat", "Group", "Profile"]
+    @State private var selectedTab: String = "Home"
+    @Namespace private var namespace
+
+    var body: some View {
+        HStack {
+            ForEach(tabs, id: \.self) { tab in
+                ZStack {
+                    if selectedTab == tab {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.red)
+                            .frame(width: 32, height: 2, alignment: .bottom)
+                            .offset(y: 15)
+                            .matchedGeometryEffect(id: "tab_id", in: namespace)
+                    }
+
+                    Text(tab).font(.body)
+                        .foregroundColor(selectedTab == tab ? Color.red : Color.gray)
+                }
+                .frame(maxWidth: .infinity)
+                .onTapGesture {
+                    withAnimation(.spring()) {
+                        selectedTab = tab
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 40)
+        .frame(height: 54)
+        .frame(maxWidth: .infinity)
+    }
+}
+
+
+struct TabBar2View: View {
+    let tabs: [String] = ["Home", "Chat", "Group", "Profile"]
+    @State private var selectedTab: String = "Home"
+    @Namespace private var namespace
+    
+    var body: some View {
+        HStack {
+            ForEach(tabs, id: \.self) { tab in
+                ZStack {
+                    if selectedTab == tab {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.red)
+                            .frame(width: 32, height: 2, alignment: .bottom)
+                            .offset(y: 15)
+                            .matchedGeometryEffect(id: "tab_id", in: namespace)
+                    }
+                    
+                    Text(tab).font(.body)
+                        .foregroundColor(selectedTab == tab ? Color.red : Color.gray)
+                }
+                .frame(maxWidth: .infinity)
+                .onTapGesture {
+                    withAnimation(.spring()) {
+                        selectedTab = tab
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 40)
+        .frame(height: 54)
+        .frame(maxWidth: .infinity)
     }
 }
