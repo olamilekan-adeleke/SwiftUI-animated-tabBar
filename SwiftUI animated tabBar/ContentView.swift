@@ -15,19 +15,23 @@ struct ContentView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            VStack(alignment: .leading) {
-                Text("Browse").font(.largeTitle.bold())
+            Group {
+                Spacer().frame(height: 20)
 
-                Text("Explore our collection")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.gray)
+                tagsView()
+
+                Spacer().frame(height: 20)
+
+                RoundedRectangle(cornerRadius: 5)
+                    .frame(height: 2)
+                    .padding(.horizontal, 10)
+
+                Spacer().frame(height: 20)
+
+                TabBarView()
+
+                Spacer().frame(height: 20)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 15)
-
-            tagsView()
-
-            Spacer().frame(height: 20)
 
             RoundedRectangle(cornerRadius: 5)
                 .frame(height: 2)
@@ -35,12 +39,7 @@ struct ContentView: View {
 
             Spacer().frame(height: 20)
 
-            TabBarView()
-            
-            Spacer().frame(height: 20)
-            
             TabBar2View()
-            
 
             Spacer()
         }
@@ -116,37 +115,60 @@ struct TabBarView: View {
     }
 }
 
+struct TabItem: Identifiable {
+    let id: UUID = .init()
+    let name: String
+    let icon: String
+}
 
 struct TabBar2View: View {
-    let tabs: [String] = ["Home", "Chat", "Group", "Profile"]
+    let tabs: [TabItem] = [
+        TabItem(name: "Home", icon: "house"),
+        TabItem(name: "Chat", icon: "message"),
+        TabItem(name: "Like", icon: "heart"),
+        TabItem(name: "Profile", icon: "person")
+    ]
+
     @State private var selectedTab: String = "Home"
     @Namespace private var namespace
-    
+
     var body: some View {
         HStack {
-            ForEach(tabs, id: \.self) { tab in
+            ForEach(tabs) { tab in
                 ZStack {
-                    if selectedTab == tab {
-                        RoundedRectangle(cornerRadius: 10)
+                    if selectedTab == tab.name {
+                        RoundedRectangle(cornerRadius: 30)
                             .fill(Color.red)
-                            .frame(width: 32, height: 2, alignment: .bottom)
-                            .offset(y: 15)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 4)
                             .matchedGeometryEffect(id: "tab_id", in: namespace)
                     }
-                    
-                    Text(tab).font(.body)
-                        .foregroundColor(selectedTab == tab ? Color.red : Color.gray)
+
+                    HStack {
+                        Image(systemName: tab.icon)
+                            .foregroundColor(selectedTab == tab.name ? Color.white : Color.black.opacity(0.5))
+
+                        if selectedTab == tab.name {
+                            Text(tab.name).font(.body)
+                                .foregroundColor(selectedTab == tab.name ? Color.white : Color.black.opacity(0.5))
+                        }
+                    }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(minWidth: 60)
                 .onTapGesture {
                     withAnimation(.spring()) {
-                        selectedTab = tab
+                        selectedTab = tab.name
                     }
                 }
             }
         }
-        .padding(.horizontal, 40)
         .frame(height: 54)
+        .overlay {
+            RoundedRectangle(cornerRadius: 30)
+                .fill(.red.opacity(0.15))
+                .allowsHitTesting(false)
+        }
+        .padding(.horizontal, 10)
         .frame(maxWidth: .infinity)
     }
 }
